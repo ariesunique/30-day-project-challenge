@@ -18,5 +18,8 @@
 import click
 
 @click.command()
-def quote():
-    click.echo("Stock quote goes here")
+@click.argument('symb', nargs=-1)
+def quote(symb):
+    for s in symb:
+        click.echo(f"Getting stock information for {s}")
+
