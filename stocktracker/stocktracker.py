@@ -16,10 +16,16 @@
 # -----------------------------------
 
 import click
+import requests
 
 @click.command()
-@click.argument('symb', nargs=-1)
-def quote(symb):
-    for s in symb:
-        click.echo(f"Getting stock information for {s}")
+@click.argument('symbs', nargs=-1)
+def quote(symbs):
+    key = ''
+    for symb in symbs:
+        click.echo(f"Getting stock information for {symb}")
+        url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symb}&apikey={key}"
+        response = requests.get(url)
+        data = response.json()["Time Series (Daily)"]
+        print(next(iter(data.values())))
 
