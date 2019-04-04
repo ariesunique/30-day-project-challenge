@@ -17,11 +17,15 @@
 
 import click
 import requests
+import configparser
+
+config = configparser.ConfigParser()
+config.read("config.ini")
 
 @click.command()
 @click.argument('symbs', nargs=-1)
 def quote(symbs):
-    key = ''
+    key = config['DEFAULT']['ALPHA_VANTAGE_API_KEY']
     for symb in symbs:
         click.echo(f"Getting stock information for {symb}")
         url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symb}&apikey={key}"
