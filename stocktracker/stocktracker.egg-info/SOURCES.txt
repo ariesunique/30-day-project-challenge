@@ -1,3 +1,4 @@
+config.ini
 stocktracker.py
 stocktracker.egg-info/PKG-INFO
 stocktracker.egg-info/SOURCES.txt

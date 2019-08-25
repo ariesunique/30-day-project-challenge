@@ -8,6 +8,7 @@ setup(
         'Click',
         'requests',
     ],
+    data_files=[('', ['config.ini'])],
     entry_points='''
         [console_scripts]
         stocktracker=stocktracker:quote
