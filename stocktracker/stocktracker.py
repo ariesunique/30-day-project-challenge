@@ -13,6 +13,7 @@
 #
 #  Use AlphaVantage service to get the stock quotes
 #  https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&apikey=demo
+#  Usage limit: up to 5 API requests per minute and 500 requests per day
 # -----------------------------------
 
 import click
@@ -24,18 +25,23 @@ from pprint import pprint
 config = configparser.ConfigParser()
 config.read("config.ini")
 
-@click.command()
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
+
+@click.command(context_settings=CONTEXT_SETTINGS)
 @click.argument('symbs', nargs=-1, required=True)
-def quote(symbs):
+@click.option('--alphabetize', '-a', is_flag=True, help="Alphabetize results, if flag provided")
+def quote(symbs, alphabetize):
     """
     SYMBS - the symbols for which to fetch stock information. At least one is required. Enter up to 5 symbols at once.
     """
     key = config['DEFAULT']['ALPHA_VANTAGE_API_KEY']
     errors = []
+    results = []
     count = 0
+    latest_date = ""
     for symb in symbs:
-        #print(symb, count)
-        if count > 5:
+    
+        if count >= 5:
             print("Warning: processing only the first five symbols")
             break 
             
@@ -55,10 +61,23 @@ def quote(symbs):
             count += 1
             latest_date = next(iter(data.keys()))
             latest_info = data.get(latest_date)
-            print("On {}, the closing price of {} was ${}.".format(latest_date, symb, latest_info.get("4. close")))
+            results.append((symb, latest_info.get("4. close")))
+            #print("On {}, the closing price of {} was ${}.".format(latest_date, symb, latest_info.get("4. close")))
         else:
-            errors.append("No data for {}".format(symb))
-            #pprint(data)
-
+            print("No data at this time (you may have reached the time limit for this service - up to 5 stocks per minute). Try again in a few seconds.".format(symb))
+            sys.exit(0)
+        
+    if results:
+        if alphabetize:
+            results.sort()
+        
+        print("\nHere are the stock prices on {}:\n".format(latest_date))
+        print("{:^10} {:^15}".format("Stock", "Quote"))
+        print("{:=^25}".format("="))
+        for symb, quote in results:
+            print("{:^10} {:>12}".format(symb, quote))
+        print("\n")
+        
     if errors:        
         print("\n".join(errors))
+        print("\n")
