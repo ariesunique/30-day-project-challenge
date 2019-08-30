@@ -70,10 +70,10 @@ def quote(symbs, alphabetize):
             results.sort()
         
         print("\nHere are the stock prices on {}:\n".format(latest_date))
-        print("{:^10} {:^15}".format("Stock", "Quote"))
-        print("{:=^25}".format("="))
+        print("  {:12} {:15}".format("Stock", "Quote"))
+        print("{:=^35}".format("="))
         for symb, quote in results:
-            print("{:^10} {:>12}".format(symb, quote))
+            print("  {:12} {:15}".format(symb, quote))
         print("\n")
         
     if errors:        
