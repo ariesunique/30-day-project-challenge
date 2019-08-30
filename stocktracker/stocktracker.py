@@ -20,7 +20,6 @@ import click
 import requests
 import configparser
 import sys
-from pprint import pprint
 
 config = configparser.ConfigParser()
 config.read("config.ini")
@@ -53,7 +52,7 @@ def quote(symbs, alphabetize):
             sys.exit(1)
         
         if "Error Message" in response.json():
-            errors.append("Unable to get data for symbol {}".format(symb))
+            errors.append("Unable to get data for symbol '{}'. Check that the symbol is correct.".format(symb))
             continue
         
         data = response.json().get("Time Series (Daily)")
@@ -61,8 +60,7 @@ def quote(symbs, alphabetize):
             count += 1
             latest_date = next(iter(data.keys()))
             latest_info = data.get(latest_date)
-            results.append((symb, latest_info.get("4. close")))
-            #print("On {}, the closing price of {} was ${}.".format(latest_date, symb, latest_info.get("4. close")))
+            results.append((symb.upper(), latest_info.get("4. close")))
         else:
             print("No data at this time (you may have reached the time limit for this service - up to 5 stocks per minute). Try again in a few seconds.".format(symb))
             sys.exit(0)
