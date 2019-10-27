@@ -24,5 +24,12 @@ Note - This script uses [AlphaVantage](https://www.alphavantage.co/) API to get 
 3. Rename or copy *config.ini.example* to *config.ini*. Replace the text "GET YOUR OWN KEY" with your AlphaVantage API key.
 4. Install the project by running
 
-
          pip install --editable .
+
+
+Note: If you are using a machine where you do not have write access to the default dir to install packages, then do the following:
+1. mkdir ~/site-packages     
+2. export PYTHONPATH='~/site-packages'
+3. pip install --target ~/site-packages --editable .
+
+Additional Note: If python3 is not your default python version, then use pip3 instead of pip. 
